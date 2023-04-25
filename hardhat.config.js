@@ -50,7 +50,7 @@ module.exports = {
   networks: {
     hardhat: {},
     goerli: {
-      url: 'https://data-seed-prebsc-1-s1.binance.org:8545',
+      url: API_URL,
       accounts: [PRIVATE_KEY]
     },
     bsctest: {
