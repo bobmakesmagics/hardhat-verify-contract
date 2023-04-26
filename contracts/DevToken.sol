@@ -11,6 +11,7 @@ contract DevToken is ERC20, Ownable, PaymentSplitter {
     uint256 public licensesIssuedToday = 0;
     uint256 public totalLicenses = 0;
     address private adminAddress;
+    uint8 private _decimals;
     uint256 public lastDistribution = block.timestamp;
 
     struct License {
@@ -18,7 +19,7 @@ contract DevToken is ERC20, Ownable, PaymentSplitter {
         uint256 amount;
     }
 
-    License[] public licenses;
+    License[] internal licenses;
 
     event LicensePurchased(
         address indexed buyer,
@@ -30,16 +31,21 @@ contract DevToken is ERC20, Ownable, PaymentSplitter {
     constructor(
         string memory name,
         string memory symbol,
-        uint8 decimals,
+        uint8 decimal,
         uint256 initialSupply,
         uint256 initialLicensePrice,
         address[] memory payees,
         uint256[] memory shares
     ) payable ERC20(name, symbol) PaymentSplitter(payees, shares) {
-        _mint(payees[0], (initialSupply * (10 ** decimals)) / 2);
-        _mint(payees[1], (initialSupply * (10 ** decimals)) / 2);
+        _mint(payees[0], (initialSupply * (10 ** decimal)) / 2);
+        _mint(payees[1], (initialSupply * (10 ** decimal)) / 2);
         licensePrice = initialLicensePrice;
         adminAddress = payees[0];
+        _decimals = decimal;
+    }
+
+    function decimals() public view virtual override returns (uint8) {
+        return _decimals;
     }
 
     function buyLicense(uint256 amount) public payable {
@@ -60,6 +66,7 @@ contract DevToken is ERC20, Ownable, PaymentSplitter {
     }
 
     function getTokenAmountToDistribute() public view returns (uint256) {
+        require(licensesIssuedToday > 0, "No license issued yet.");
         uint256 poolSupply = getPoolSupply();
         uint256 tokensToDistribute = poolSupply /
             roundDays /

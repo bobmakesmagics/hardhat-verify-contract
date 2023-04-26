@@ -19,6 +19,12 @@ function delay(time) {
   return new Promise(resolve => setTimeout(resolve, time));
 }
 
+async function estimateGas(contract, args) {
+  const data = contract.interface.encodeDeploy(args)
+
+  return await hre.ethers.provider.estimateGas({ data })
+}
+
 task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 
   const [deployer] = await hre.ethers.getSigners();
@@ -32,6 +38,10 @@ task("deploy", "Deploy the smart contracts", async (taskArgs, hre) => {
   const [deployer] = await hre.ethers.getSigners();
 
   const MYToken = await hre.ethers.getContractFactory("DevToken");
+  const gas = await estimateGas(MYToken, arguments(deployer.address))
+
+  console.log("Estimated gas to deploy: ", gas.toNumber())
+
   const myToken = await MYToken.deploy(...arguments(deployer.address));
 
   await myToken.deployed();
