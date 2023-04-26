@@ -40,7 +40,7 @@ task("deploy", "Deploy the smart contracts", async (taskArgs, hre) => {
   const MYToken = await hre.ethers.getContractFactory("DevToken");
   const gas = await estimateGas(MYToken, arguments(deployer.address))
 
-  console.log("Estimated gas to deploy: ", gas.toNumber())
+  console.log("Estimated gas to deploy:", Number(gas).toString())
 
   const myToken = await MYToken.deploy(...arguments(deployer.address));
 
