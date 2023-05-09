@@ -46,7 +46,7 @@ task("deploy", "Deploy the smart contracts", async (taskArgs, hre) => {
 
   await myToken.deployed();
   console.log("Deployed contract address:", myToken.address)
-  await delay(30000);
+  await delay(10000);
   await hre.run("verify:verify", {
     address: myToken.address,
     constructorArguments: arguments(deployer.address),

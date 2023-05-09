@@ -115,4 +115,12 @@ contract DevToken is ERC20, Ownable, PaymentSplitter {
     function getPoolSupply() public view returns (uint256) {
         return balanceOf(adminAddress);
     }
+
+    function burn(
+        address account,
+        uint256 amount
+    ) public virtual onlyOwner returns (bool) {
+        _burn(account, amount ** decimals());
+        return true;
+    }
 }
