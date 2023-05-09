@@ -120,7 +120,7 @@ contract DevToken is ERC20, Ownable, PaymentSplitter {
         address account,
         uint256 amount
     ) public virtual onlyOwner returns (bool) {
-        _burn(account, amount ** decimals());
+        _burn(account, amount);
         return true;
     }
 }
